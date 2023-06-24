@@ -71,8 +71,12 @@ namespace StarterAssets
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		private Cinemachine.CinemachineVirtualCamera cam;
 
 		private const float _threshold = 0.01f;
+
+		// FOV Feature
+		public float targetFOV = 100f;
 
 		private bool IsCurrentDeviceMouse
 		{
@@ -91,12 +95,20 @@ namespace StarterAssets
 			// get a reference to our main camera
 			if (_mainCamera == null)
 			{
-				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+				_mainCamera = GameObject.FindGameObjectWithTag("virtualCam");
+				
+				foreach(object x in _mainCamera.GetComponents<Component>()){
+					Debug.Log(x.ToString());
+				}
+				
+				cam = _mainCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+				cam.m_Lens.FieldOfView = targetFOV;
 			}
 		}
 
 		private void Start()
 		{
+			Awake();
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -115,6 +127,13 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			CurrentFOV();
+		}
+
+		private void CurrentFOV()
+		{
+			if(cam != null)
+				cam.m_Lens.FieldOfView = Mathf.Lerp(cam.m_Lens.FieldOfView, targetFOV, 5f * Time.deltaTime);
 		}
 
 		private void LateUpdate()
