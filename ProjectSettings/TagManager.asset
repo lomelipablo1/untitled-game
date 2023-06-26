@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - virtualCam
+  - inventory
   layers:
   - Default
   - TransparentFX

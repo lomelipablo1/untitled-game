@@ -70,13 +70,18 @@ namespace StarterAssets
 #endif
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
-		private GameObject _mainCamera;
-		private Cinemachine.CinemachineVirtualCamera cam;
-
 		private const float _threshold = 0.01f;
 
 		// FOV Feature
+		private GameObject _mainCamera;
+		private Cinemachine.CinemachineVirtualCamera cam;
 		public float targetFOV = 100f;
+
+		// Inventory Feature
+
+		private GameObject inventory;
+
+		private bool isOpenInventory;
 
 		private bool IsCurrentDeviceMouse
 		{
@@ -97,9 +102,9 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("virtualCam");
 				
-				foreach(object x in _mainCamera.GetComponents<Component>()){
+				/*foreach(object x in _mainCamera.GetComponents<Component>()){
 					Debug.Log(x.ToString());
-				}
+				}*/
 				
 				cam = _mainCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
 				cam.m_Lens.FieldOfView = targetFOV;
@@ -120,6 +125,10 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			inventory = GameObject.FindGameObjectWithTag("inventory");
+			inventory.SetActive(false); // by default, inventory should be closed until opened by player
+			isOpenInventory = false;
 		}
 
 		private void Update()
@@ -128,6 +137,22 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 			CurrentFOV();
+			OpenInventory();
+		}
+
+		private void OpenInventory()
+		{
+			if(_input.inventory && !isOpenInventory){
+				inventory.SetActive(true);
+				isOpenInventory = true;
+				_input.inventory = false;
+			}
+			else if(_input.inventory && isOpenInventory)
+			{
+				inventory.SetActive(false);
+				isOpenInventory = false;
+				_input.inventory = false;
+			}
 		}
 
 		private void CurrentFOV()

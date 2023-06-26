@@ -20,6 +20,9 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+		[Header("Inventory Settings")]
+		public bool inventory;
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		public void OnMove(InputValue value)
 		{
@@ -42,6 +45,11 @@ namespace StarterAssets
 		public void OnSprint(InputValue value)
 		{
 			SprintInput(value.isPressed);
+		}
+
+		public void OnInventory(InputValue value)
+		{
+			InventoryInput(value.isPressed);
 		}
 #endif
 
@@ -66,6 +74,11 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 		
+		public void InventoryInput(bool newInventoryState)
+		{
+			inventory = newInventoryState;
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
